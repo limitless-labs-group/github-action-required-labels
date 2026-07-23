@@ -24,6 +24,7 @@ async function action() {
     const exitType = core.getInput("exit_type") || "failure";
     const shouldAddComment = core.getInput("add_comment") == "true";
     const labelsAreRegex = core.getInput("use_regex") == "true";
+    const trimPrefix = core.getInput("trim");
 
     let providedLabels = core.getInput("labels", { required: true });
 
@@ -164,7 +165,23 @@ async function action() {
       }
     }
 
-    core.setOutput("labels", intersection.join(","));
+    // Strip the prefix from the matched labels before outputting them. The
+    // comparison above always uses the untrimmed labels, so this cannot change
+    // whether the action passes or fails
+    const outputLabels = trimPrefix
+      ? intersection
+          .map((label) =>
+            label.toLowerCase().startsWith(trimPrefix.toLowerCase())
+              ? label.slice(trimPrefix.length)
+              : label,
+          )
+          // A label that is exactly the prefix trims down to nothing, which
+          // would add an empty entry to the matrix
+          .filter((label) => label)
+      : intersection;
+
+    core.setOutput("labels", outputLabels.join(","));
+    core.setOutput("matrix", JSON.stringify(outputLabels));
     core.setOutput("status", "success");
   } catch (e) {
     core.setFailed(e.message);
@@ -208,6 +225,7 @@ async function exitWithError(
     await octokit.rest.issues[method](params);
   }
 
+  core.setOutput("matrix", "[]");
   core.setOutput("status", "failure");
 
   if (exitType === "success") {

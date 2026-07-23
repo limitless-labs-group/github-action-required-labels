@@ -71,7 +71,7 @@ describe("Required Labels", () => {
       mockLabels(["enhancement", "bug"]);
 
       await action();
-      expect(core.setOutput).toBeCalledTimes(2);
+      expect(core.setOutput).toBeCalledTimes(3);
       expect(core.setOutput).toBeCalledWith("status", "success");
       expect(core.setOutput).toBeCalledWith("labels", "enhancement");
     });
@@ -87,7 +87,7 @@ describe("Required Labels", () => {
       mockLabels(["bug"]);
 
       await action();
-      expect(core.setOutput).toBeCalledTimes(1);
+      expect(core.setOutput).toBeCalledTimes(2);
       expect(core.setOutput).toBeCalledWith("status", "failure");
       expect(core.setFailed).toBeCalledTimes(1);
       expect(core.setFailed).toBeCalledWith(
@@ -122,10 +122,7 @@ describe("Required Labels", () => {
 
       mockLabels(["bug"]);
       mockListComments([{ id: "12345", body: `${matchToken}This` }]);
-      mockDelete(
-        "/repos/mheap/missing-repo/issues/comments/12345",
-        200,
-      );
+      mockDelete("/repos/mheap/missing-repo/issues/comments/12345", 200);
 
       await action();
     });
@@ -146,16 +143,12 @@ describe("Required Labels", () => {
           path: "/repos/mheap/missing-repo/issues/28/labels",
           method: "GET",
         })
-        .reply(
-          200,
-          JSON.stringify([{ name: "triage" }]),
-          {
-            headers: {
-              "content-type": "application/json",
-              link: '<https://api.github.com/repos/mheap/missing-repo/issues/28/labels?page=2>; rel="next"',
-            },
+        .reply(200, JSON.stringify([{ name: "triage" }]), {
+          headers: {
+            "content-type": "application/json",
+            link: '<https://api.github.com/repos/mheap/missing-repo/issues/28/labels?page=2>; rel="next"',
           },
-        );
+        });
 
       // Second page of labels
       pool
@@ -163,16 +156,12 @@ describe("Required Labels", () => {
           path: "/repos/mheap/missing-repo/issues/28/labels?page=2",
           method: "GET",
         })
-        .reply(
-          200,
-          JSON.stringify([{ name: "bug" }]),
-          {
-            headers: {
-              "content-type": "application/json",
-              link: '<https://api.github.com/repos/mheap/missing-repo/issues/28/labels?page=3>; rel="next"',
-            },
+        .reply(200, JSON.stringify([{ name: "bug" }]), {
+          headers: {
+            "content-type": "application/json",
+            link: '<https://api.github.com/repos/mheap/missing-repo/issues/28/labels?page=3>; rel="next"',
           },
-        );
+        });
 
       // Third page of labels
       pool
@@ -201,7 +190,7 @@ describe("Required Labels", () => {
 
       await action();
 
-      expect(core.setOutput).toBeCalledTimes(2);
+      expect(core.setOutput).toBeCalledTimes(3);
       expect(core.setOutput).toBeCalledWith("status", "success");
       expect(core.setOutput).toBeCalledWith("labels", "enhancement");
     });
@@ -216,7 +205,7 @@ describe("Required Labels", () => {
 
       await action();
 
-      expect(core.setOutput).toBeCalledTimes(2);
+      expect(core.setOutput).toBeCalledTimes(3);
       expect(core.setOutput).toBeCalledWith("status", "success");
       expect(core.setOutput).toBeCalledWith("labels", "enhancement,bug");
     });
@@ -232,7 +221,7 @@ describe("Required Labels", () => {
 
       await action();
 
-      expect(core.setOutput).toBeCalledTimes(2);
+      expect(core.setOutput).toBeCalledTimes(3);
       expect(core.setOutput).toBeCalledWith("status", "success");
       expect(core.setOutput).toBeCalledWith("labels", "enhancement,bug");
     });
@@ -248,7 +237,7 @@ describe("Required Labels", () => {
 
       await action();
 
-      expect(core.setOutput).toBeCalledTimes(2);
+      expect(core.setOutput).toBeCalledTimes(3);
       expect(core.setOutput).toBeCalledWith("status", "success");
       expect(core.setOutput).toBeCalledWith("labels", "enhancement");
     });
@@ -264,7 +253,7 @@ describe("Required Labels", () => {
 
       await action();
 
-      expect(core.setOutput).toBeCalledTimes(2);
+      expect(core.setOutput).toBeCalledTimes(3);
       expect(core.setOutput).toBeCalledWith("status", "success");
       expect(core.setOutput).toBeCalledWith("labels", "backport 3.7");
     });
@@ -280,7 +269,7 @@ describe("Required Labels", () => {
 
       await action();
 
-      expect(core.setOutput).toBeCalledTimes(2);
+      expect(core.setOutput).toBeCalledTimes(3);
       expect(core.setOutput).toBeCalledWith("status", "success");
       expect(core.setOutput).toBeCalledWith("labels", "enhancement,bug");
     });
@@ -297,7 +286,7 @@ describe("Required Labels", () => {
 
       await action();
 
-      expect(core.setOutput).toBeCalledTimes(2);
+      expect(core.setOutput).toBeCalledTimes(3);
       expect(core.setOutput).toBeCalledWith("status", "success");
       expect(core.setOutput).toBeCalledWith("labels", "enhancement,bug");
     });
@@ -314,7 +303,7 @@ describe("Required Labels", () => {
 
       await action();
 
-      expect(core.setOutput).toBeCalledTimes(1);
+      expect(core.setOutput).toBeCalledTimes(2);
       expect(core.setOutput).toBeCalledWith("status", "failure");
       expect(core.setFailed).toBeCalledTimes(1);
       expect(core.setFailed).toBeCalledWith(
@@ -333,7 +322,7 @@ describe("Required Labels", () => {
 
       await action();
 
-      expect(core.setOutput).toBeCalledTimes(1);
+      expect(core.setOutput).toBeCalledTimes(2);
       expect(core.setOutput).toBeCalledWith("status", "failure");
       expect(core.setFailed).toBeCalledTimes(1);
       expect(core.setFailed).toBeCalledWith(
@@ -352,7 +341,7 @@ describe("Required Labels", () => {
 
       await action();
 
-      expect(core.setOutput).toBeCalledTimes(1);
+      expect(core.setOutput).toBeCalledTimes(2);
       expect(core.setOutput).toBeCalledWith("status", "failure");
       expect(core.setFailed).toBeCalledTimes(1);
       expect(core.setFailed).toBeCalledWith(
@@ -370,7 +359,7 @@ describe("Required Labels", () => {
 
       await action();
 
-      expect(core.setOutput).toBeCalledTimes(1);
+      expect(core.setOutput).toBeCalledTimes(2);
       expect(core.setOutput).toBeCalledWith("status", "failure");
       expect(core.setFailed).toBeCalledTimes(1);
       expect(core.setFailed).toBeCalledWith(
@@ -387,7 +376,7 @@ describe("Required Labels", () => {
       mockLabels(["enhancement", "triage", "bug"]);
 
       await action();
-      expect(core.setOutput).toBeCalledTimes(1);
+      expect(core.setOutput).toBeCalledTimes(2);
       expect(core.setOutput).toBeCalledWith("status", "failure");
       expect(core.setFailed).toBeCalledTimes(1);
       expect(core.setFailed).toBeCalledWith(
@@ -478,7 +467,7 @@ describe("Required Labels", () => {
       mockLabels(["bug"]);
 
       await action();
-      expect(core.setOutput).toBeCalledTimes(2);
+      expect(core.setOutput).toBeCalledTimes(3);
       expect(core.setOutput).toBeCalledWith("status", "success");
       expect(core.setOutput).toBeCalledWith("labels", "bug");
     });
@@ -492,7 +481,7 @@ describe("Required Labels", () => {
       mockLabels(["bug"]);
 
       await action();
-      expect(core.setOutput).toBeCalledTimes(2);
+      expect(core.setOutput).toBeCalledTimes(3);
       expect(core.setOutput).toBeCalledWith("status", "success");
       expect(core.setOutput).toBeCalledWith("labels", "bug");
     });
@@ -506,7 +495,7 @@ describe("Required Labels", () => {
       mockLabels(["bug"]);
 
       await action();
-      expect(core.setOutput).toBeCalledTimes(2);
+      expect(core.setOutput).toBeCalledTimes(3);
       expect(core.setOutput).toBeCalledWith("status", "success");
       expect(core.setOutput).toBeCalledWith("labels", "bug");
     });
@@ -520,7 +509,7 @@ describe("Required Labels", () => {
       mockLabels(["DO NOT MERGE"]);
 
       await action();
-      expect(core.setOutput).toBeCalledTimes(2);
+      expect(core.setOutput).toBeCalledTimes(3);
       expect(core.setOutput).toBeCalledWith("status", "success");
       expect(core.setOutput).toBeCalledWith("labels", "Do Not Merge");
     });
@@ -536,7 +525,7 @@ describe("Required Labels", () => {
 
       await action();
 
-      expect(core.setOutput).toBeCalledTimes(2);
+      expect(core.setOutput).toBeCalledTimes(3);
       expect(core.setOutput).toBeCalledWith("status", "success");
       expect(core.setOutput).toBeCalledWith(
         "labels",
@@ -644,10 +633,7 @@ describe("Required Labels", () => {
 
       mockLabels(["enhancement", "bug"]);
       mockListComments([{ id: "12345", body: `${matchToken}This` }]);
-      mockPatch(
-        "/repos/mheap/missing-repo/issues/comments/12345",
-        200,
-      );
+      mockPatch("/repos/mheap/missing-repo/issues/comments/12345", 200);
 
       await action();
     });
@@ -708,7 +694,7 @@ describe("Required Labels", () => {
       mockLabels(["enhancement", "bug"]);
 
       await action();
-      expect(core.setOutput).toBeCalledTimes(2);
+      expect(core.setOutput).toBeCalledTimes(3);
       expect(core.setOutput).toBeCalledWith("status", "success");
       expect(core.setOutput).toBeCalledWith("labels", "enhancement");
     });
@@ -736,9 +722,172 @@ describe("Required Labels", () => {
       mockLabels(["enhancement", "bug"]);
 
       await action();
-      expect(core.setOutput).toBeCalledTimes(2);
+      expect(core.setOutput).toBeCalledTimes(3);
       expect(core.setOutput).toBeCalledWith("status", "success");
       expect(core.setOutput).toBeCalledWith("labels", "enhancement");
+    });
+  });
+
+  describe("matrix output", () => {
+    it("outputs the matched labels as a JSON array", async () => {
+      restoreTest = mockPr({
+        INPUT_LABELS: "enhancement\nbug\nfeature",
+        INPUT_MODE: "minimum",
+        INPUT_COUNT: "1",
+        GITHUB_TOKEN: "mock-token-here-abc",
+      });
+
+      mockLabels(["enhancement", "bug"]);
+
+      await action();
+      expect(core.setOutput).toBeCalledWith("status", "success");
+      expect(core.setOutput).toBeCalledWith("matrix", '["enhancement","bug"]');
+    });
+
+    it("outputs an empty array when no labels match", async () => {
+      restoreTest = mockPr({
+        INPUT_LABELS: "enhancement",
+        INPUT_MODE: "maximum",
+        INPUT_COUNT: "1",
+        GITHUB_TOKEN: "mock-token-here-abc",
+      });
+
+      mockLabels(["bug"]);
+
+      await action();
+      expect(core.setOutput).toBeCalledWith("status", "success");
+      expect(core.setOutput).toBeCalledWith("matrix", "[]");
+    });
+
+    it("outputs an empty array when the action fails", async () => {
+      restoreTest = mockPr({
+        INPUT_LABELS: "enhancement",
+        INPUT_MODE: "exactly",
+        INPUT_COUNT: "1",
+        GITHUB_TOKEN: "mock-token-here-abc",
+      });
+
+      mockLabels(["bug"]);
+
+      await action();
+      expect(core.setOutput).toBeCalledWith("status", "failure");
+      expect(core.setOutput).toBeCalledWith("matrix", "[]");
+    });
+
+    it("outputs the applied labels that matched when using regex", async () => {
+      restoreTest = mockPr({
+        INPUT_LABELS: "semver:.*",
+        INPUT_MODE: "exactly",
+        INPUT_COUNT: "1",
+        INPUT_USE_REGEX: "true",
+        GITHUB_TOKEN: "mock-token-here-abc",
+      });
+
+      mockLabels(["semver:minor", "bug"]);
+
+      await action();
+      expect(core.setOutput).toBeCalledWith("status", "success");
+      expect(core.setOutput).toBeCalledWith("matrix", '["semver:minor"]');
+    });
+  });
+
+  describe("trim", () => {
+    it("strips the prefix from both outputs", async () => {
+      restoreTest = mockPr({
+        INPUT_LABELS: "deploy:staging\ndeploy:production",
+        INPUT_MODE: "minimum",
+        INPUT_COUNT: "1",
+        INPUT_TRIM: "deploy:",
+      });
+
+      mockLabels(["deploy:staging", "deploy:production"]);
+
+      await action();
+      expect(core.setOutput).toBeCalledWith("status", "success");
+      expect(core.setOutput).toBeCalledWith("labels", "staging,production");
+      expect(core.setOutput).toBeCalledWith(
+        "matrix",
+        '["staging","production"]',
+      );
+    });
+
+    it("leaves labels that do not have the prefix alone", async () => {
+      restoreTest = mockPr({
+        INPUT_LABELS: "deploy:staging\nbug",
+        INPUT_MODE: "minimum",
+        INPUT_COUNT: "1",
+        INPUT_TRIM: "deploy:",
+      });
+
+      mockLabels(["deploy:staging", "bug"]);
+
+      await action();
+      expect(core.setOutput).toBeCalledWith("labels", "staging,bug");
+      expect(core.setOutput).toBeCalledWith("matrix", '["staging","bug"]');
+    });
+
+    it("matches the prefix case insensitively", async () => {
+      restoreTest = mockPr({
+        INPUT_LABELS: "Deploy:Staging",
+        INPUT_MODE: "exactly",
+        INPUT_COUNT: "1",
+        INPUT_TRIM: "deploy:",
+      });
+
+      mockLabels(["Deploy:Staging"]);
+
+      await action();
+      expect(core.setOutput).toBeCalledWith("labels", "Staging");
+      expect(core.setOutput).toBeCalledWith("matrix", '["Staging"]');
+    });
+
+    it("drops a label that is exactly the prefix", async () => {
+      restoreTest = mockPr({
+        INPUT_LABELS: "deploy:\ndeploy:staging",
+        INPUT_MODE: "minimum",
+        INPUT_COUNT: "1",
+        INPUT_TRIM: "deploy:",
+      });
+
+      mockLabels(["deploy:", "deploy:staging"]);
+
+      await action();
+      expect(core.setOutput).toBeCalledWith("labels", "staging");
+      expect(core.setOutput).toBeCalledWith("matrix", '["staging"]');
+    });
+
+    it("trims labels matched via regex", async () => {
+      restoreTest = mockPr({
+        INPUT_LABELS: "deploy:.*",
+        INPUT_MODE: "minimum",
+        INPUT_COUNT: "1",
+        INPUT_USE_REGEX: "true",
+        INPUT_TRIM: "deploy:",
+      });
+
+      mockLabels(["deploy:staging", "bug"]);
+
+      await action();
+      expect(core.setOutput).toBeCalledWith("labels", "staging");
+      expect(core.setOutput).toBeCalledWith("matrix", '["staging"]');
+    });
+
+    it("does not affect matching or the failure message", async () => {
+      restoreTest = mockPr({
+        INPUT_LABELS: "staging",
+        INPUT_MODE: "exactly",
+        INPUT_COUNT: "1",
+        INPUT_TRIM: "deploy:",
+      });
+
+      // "deploy:staging" is not a match for "staging", trim is output-only
+      mockLabels(["deploy:staging"]);
+
+      await action();
+      expect(core.setOutput).toBeCalledWith("status", "failure");
+      expect(core.setFailed).toBeCalledWith(
+        "Label error. Requires exactly 1 of: staging. Found: deploy:staging",
+      );
     });
   });
 });
