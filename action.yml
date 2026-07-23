@@ -9,6 +9,8 @@ branding:
 outputs:
   labels:
     description: "The labels that were matched as a comma separated string"
+  matrix:
+    description: "The labels that were matched as a JSON array, for use with fromJSON in a job matrix. Empty array if the check failed"
   status:
     description: "The status of the action."
 inputs:
@@ -39,3 +41,7 @@ inputs:
   use_regex:
     description: Evaluate the values in `labels` as regular expressions
     default: "false"
+  trim:
+    description: "A prefix to strip from the matched labels in the `labels` and `matrix` outputs. Does not affect matching"
+    default: ""
+    required: false
